@@ -1,0 +1,81 @@
+<div class="profile-container">
+  <mat-card *ngIf="loading" class="loading-card">
+    <mat-spinner diameter="50"></mat-spinner>
+  </mat-card>
+
+  <mat-card *ngIf="!loading">
+  <h2>My Profile</h2>
+  <form *ngIf="profileForm" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div class="grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput [value]="userProfile?.username" disabled>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput [value]="userProfile?.email" disabled>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" placeholder="Enter phone number">
+        <mat-error *ngIf="profileForm.get('phone')?.hasError('required')">
+          Phone is required
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('phone')?.hasError('pattern')">
+          Enter a valid phone number
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Role</mat-label>
+        <input matInput [value]="userProfile?.role" disabled>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Company</mat-label>
+        <input matInput [value]="userProfile?.company" disabled>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Industry</mat-label>
+        <input matInput [value]="userProfile?.industry" disabled>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Authorizations</mat-label>
+        <input matInput [value]="userProfile?.authorizations" disabled>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Interest areas</mat-label>
+        <input matInput formControlName="interestAreas" placeholder="Enter interest areas separated by commas">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" placeholder="Enter a new password">
+        <mat-error *ngIf="profileForm.get('password')?.invalid && (profileForm.get('password')?.dirty || profileForm.get('password')?.touched)">
+          Enter a password
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Repeat password</mat-label>
+        <input matInput formControlName="repeatPassword" type="password" placeholder="Repeat new password">
+        <mat-error *ngIf="profileForm.get('repeatPassword')?.invalid && (profileForm.get('repeatPassword')?.dirty || profileForm.get('repeatPassword')?.touched)">
+          Repeat the password
+        </mat-error>
+        <mat-error *ngIf="profileForm.hasError('passwordMismatch')">
+          Passwords do not match
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="!profileForm.valid">
+      Save Changes
+    </button>
+  </form>
+</mat-card>
+</div>
