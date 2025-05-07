@@ -11,8 +11,7 @@ export class UserProfileService {
 
   constructor(private http: HttpClient) {}
 
-  getUserProfile(userId: number): Observable<UserProfile> {
-    const email = this.getEmailFromUserId(userId); // <- Este método es solo un ejemplo
+  getUserProfile(email: string): Observable<UserProfile> {
     const params = new HttpParams().set('email', email);
 
     console.log('Llamando al backend con email:', email); // <- LOG de depuración
@@ -20,13 +19,7 @@ export class UserProfileService {
     return this.http.get<UserProfile>(`${this.baseUrl}/profile`, { params });
   }
 
-  updateUserProfile(userId: number, updatedData: Partial<UserProfile>): Observable<any> {
-    // Asumimos que el PUT será en /profile, si quieres lo podemos ajustar
-    return this.http.put(`${this.baseUrl}/profile`, updatedData);
-  }
+  updateUserProfile(email: string, userProfileData: Partial<UserProfile>): Observable<any> {
+    return this.http.patch(`/api/user/profile?email=${email}`, userProfileData);  }
 
-  private getEmailFromUserId(userId: number): string {
-    // 🚨 Solo ejemplo temporal: luego puedes pedir el email real del usuario logado
-    return 'laura.martinez@technova.com';
-  }
 }

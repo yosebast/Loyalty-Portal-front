@@ -39,17 +39,25 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class UserProfileComponent implements OnInit {
   profileForm!: FormGroup;
   userProfile!: UserProfile;
-  loggedInUserId: number = 123
+  loggedInUserEmail: string = '';
   loading: boolean = true;
 
   constructor(private userProfileService: UserProfileService) {}
 
   ngOnInit(): void {
-    this.userProfileService.getUserProfile(this.loggedInUserId).subscribe((data) => {
-      this.userProfile = data;
-      this.buildForm(data);
+    const storedEmail = sessionStorage.getItem('userEmail');
+    if (storedEmail) {
+      this.loggedInUserEmail = storedEmail;
+
+      this.userProfileService.getUserProfile(this.loggedInUserEmail).subscribe((data) => {
+        this.userProfile = data;
+        this.buildForm(data);
+        this.loading = false;
+      });
+    } else {
+      console.error('No hay email de usuario en sessionStorage.');
       this.loading = false;
-    });
+    }
   }
 
   buildForm(data: UserProfile): void {
@@ -59,7 +67,7 @@ export class UserProfileComponent implements OnInit {
           Validators.required,
           Validators.pattern(/^[0-9+()\s-]{6,20}$/)
         ]),
-        interestAreas: new FormControl(data.interestAreas),
+        interestAreas: new FormControl(data.interestAreas, [Validators.required]),
         password: new FormControl(''),
         repeatPassword: new FormControl('')
       },
@@ -80,7 +88,7 @@ export class UserProfileComponent implements OnInit {
         ...this.profileForm.value
       };
 
-      this.userProfileService.updateUserProfile(this.loggedInUserId, updatedProfile).subscribe((response) => {
+      this.userProfileService.updateUserProfile(this.loggedInUserEmail, updatedProfile).subscribe((response) => {
         console.log('Perfil actualizado exitosamente:', response);
       });
     } else {
